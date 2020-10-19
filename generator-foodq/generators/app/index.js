@@ -42,6 +42,11 @@ module.exports = class extends Generator {
     this.composeWith(require.resolve("../app2"), { prompts: this.prompts });
   }
 
+  async sleep (fn, par) {
+    return new Promise((resolve) => {
+      setTimeout(() => resolve(fn(par)), 0);
+    })
+  }
   async prompting() {
     let prompts = [
       {
@@ -61,6 +66,57 @@ module.exports = class extends Generator {
           return (value === true ? true : "You must be hungry");
         },
       },
+
+
+      // data grid test prompt
+      {
+        type: "input",
+        name: "packageNames",
+        message: "Enter packages",
+        store: true,
+        default: [
+          {
+            name: "default adinsure",
+          }
+        ],
+        guiOptions: {
+          type: "data-grid",
+          hint: "Enter package names",
+          columns: [
+            {
+              header: "Package Name",
+              field: "name",
+              editable: true,
+              dataType: "string",
+            },
+            {
+              header: "Dynamic data",
+              field: "dynamicField",
+              dataType: "string",
+              // function to get dynamic data, can be used to provide code tables etc.
+              dataProvider: async function (...params) {
+                return await sleep((params) => {
+                  return ['a', 'b', 'c', 'd'];
+                });
+              }
+            },
+            {
+              header: "Test",
+              field: "test",
+              editable: false,
+              dataType: "boolean"
+            },
+            {
+              header: "Dropdown",
+              field: "dropdown",
+              editor: 'DropdownCellEditor',
+              enum: ["Yes", "No", "Maybe"],
+            }
+          ]
+        },
+      },
+    
+
       {
         type: 'input',
         name: 'fav_color',
@@ -108,7 +164,7 @@ module.exports = class extends Generator {
             that.log(`Purposely delaying response for 2 seconds...`);
             setTimeout(() => {
               resolve(response.hungry);
-            }, 2000);
+            }, 0); // }, 2000);
           });
         },
         type: "checkbox",

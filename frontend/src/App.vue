@@ -103,6 +103,9 @@ import FolderBrowserPlugin from "@sap-devx/inquirer-gui-folder-browser-plugin";
 import LoginPlugin from "@sap-devx/inquirer-gui-login-plugin";
 import TilesPlugin from "@sap-devx/inquirer-gui-tiles-plugin";
 
+// temporary
+import DataGridPlugin from "./plugins/data-grid-plugin/src/index";
+
 const FUNCTION = "__Function";
 const PENDING = "pending";
 const EVALUATING = "evaluating";
@@ -487,6 +490,7 @@ export default {
       this.registerPlugin(FolderBrowserPlugin);
       this.registerPlugin(LoginPlugin);
       this.registerPlugin(TilesPlugin);
+      this.registerPlugin(DataGridPlugin);
 
       this.isInVsCode()
         ? (this.consoleClass = "consoleClassHidden")
