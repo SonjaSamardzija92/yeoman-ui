@@ -82,19 +82,14 @@ module.exports = class extends Generator {
         validate: (value, answers) => {
           return value.length > 0 ? true : "Must have at least 1 row entered.";
         },
-        dynamicData: (column, index) => {
-          // return this.sleep((colName) => {
-          //   return {
-          //     colName, 
-          //     data: ['a', 'b', 'c', 'd']
-          //   };
-          // });
-
-          return {
-            column, 
-            index,
-            data: ['a', 'b', 'c', 'd']
-          };
+        dynamicData: async (column, index) => {
+          return await this.sleep(() => {
+            return {
+              column, 
+              index,
+              data: ['a', 'b', 'c', 'd']
+            };
+          });
         },
         guiOptions: {
           type: "data-grid",
