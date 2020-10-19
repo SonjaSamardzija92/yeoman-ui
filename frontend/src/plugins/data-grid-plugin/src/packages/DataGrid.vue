@@ -12,6 +12,7 @@
       :gridOptions="gridOptions"
       @grid-ready="onGridReady"
       @cell-value-changed="handleCellValueChanged"
+      :singleClickEdit="true"
     >
     </ag-grid-vue>
 
@@ -83,8 +84,14 @@ export default {
           const col = this.question.guiOptions.columns[index];
 
           let enumValue = col.enum;
-          if (col.enumProvider && typeof this.question[col.enumProvider] === 'function') {
-            const dynData = await this.question[col.enumProvider](col, this.question);
+          if (
+            col.enumProvider &&
+            typeof this.question[col.enumProvider] === "function"
+          ) {
+            const dynData = await this.question[col.enumProvider](
+              col,
+              this.question
+            );
             // console.log(dynData);
             enumValue = dynData;
           }
@@ -92,7 +99,8 @@ export default {
           this.columnDefs.push({
             headerName: col.header,
             field: col.field,
-            editable: col.editable !== undefined ? col.editable === true : true,
+            editable: this.getEditable(col),
+            readonly: col.editable !== undefined && !col.editable,
             cellRendererFramework: enumValue ? DropdownCellEditor : undefined,
             enum: enumValue,
           });
@@ -106,10 +114,22 @@ export default {
         width: 50,
         editable: false,
       });
+      
     },
 
     handleCellValueChanged() {
       this.answerChanged();
+    },
+    getEditable(col) {
+      if (
+        col.enum ||
+        (col.enumProvider &&
+          typeof this.question[col.enumProvider] === "function")
+      ) {
+        return false;
+      } else {
+        return col.editable !== undefined ? col.editable : true;
+      }
     },
 
     addNewRow() {
@@ -119,11 +139,6 @@ export default {
 
     deleteSelectedRow(selectedData) {
       this.gridApi.applyTransaction({ remove: selectedData });
-      this.answerChanged();
-    },
-
-    updateSelectedRow(selectedData) {
-      this.gridApi.applyTransaction({ update: selectedData });
       this.answerChanged();
     },
     answerChanged() {

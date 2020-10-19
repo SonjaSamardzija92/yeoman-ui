@@ -4,7 +4,8 @@
     <v-select
       :items="items"
       v-model="select"
-      v-on:input="changeRoute(`${select}`)"
+      v-on:input="onChange(`${select}`)"
+      :disabled="readonly"
     ></v-select>
   </div>
 </template>
@@ -17,20 +18,21 @@ export default Vue.extend({
     return {
       select: "",
       items: [],
+      readonly: false,
     };
   },
 
   beforeMount() {
     this.items = this.params.colDef.enum ? this.params.colDef.enum : [];
     this.select = this.params.node.data[this.params.colDef.field];
+    this.readonly = this.params.colDef.readonly;
   },
 
   methods: {
-    changeRoute(select) {
-      this.params.node.data[this.params.colDef.field] = select;
-      this.params.context.componentParent.updateSelectedRow([
-        this.params.node.data,
-      ]);
+    onChange(select) {
+      this.params.setValue(select);
+      this.params.context.componentParent.answerChanged();
+      this.params.api.stopEditing();
     },
   },
 });
@@ -41,10 +43,10 @@ export default Vue.extend({
   padding-top: 0px !important;
 }
 
-.v-select.v-input div.v-input__control{
+.v-select.v-input div.v-input__control {
   background-color: transparent !important;
 }
-.v-select__selection{
+.v-select__selection {
   padding-left: 5px;
 }
 </style> 
