@@ -27,6 +27,7 @@ import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { AgGridVue } from "ag-grid-vue";
 import DataGridButtons from "./DataGridButtons";
 import DropdownCellEditor from "./DropdownCellEditor";
+
 export default {
   name: "DataGrid",
   props: {
@@ -37,6 +38,7 @@ export default {
       gridOptions: null,
       columnDefs: null,
       rowData: null,
+      columnPromisesData: [],
     };
   },
   components: {
@@ -76,38 +78,63 @@ export default {
         this.question.guiOptions.columns &&
         Array.isArray(this.question.guiOptions.columns)
       ) {
-        for (
-          let index = 0;
-          index < this.question.guiOptions.columns.length;
-          index++
-        ) {
-          const col = this.question.guiOptions.columns[index];
+        try {
+        await this.createGridColumns();
+        } catch(err) {
+          console.log(err);
+        }
+      }
+    },
 
-          let enumValue = col.enum;
-          if (
-            col.enumProvider &&
-            typeof this.question[col.enumProvider] === "function"
-          ) {
+    async createGridColumns() {
+      for (
+        let index = 0;
+        index < this.question.guiOptions.columns.length;
+        index++
+      ) {
+        const col = this.question.guiOptions.columns[index];
+
+        if (
+          col.enumProvider &&
+          typeof this.question[col.enumProvider] === "function"
+        ) {
+          this.columnPromisesData.push({
+            promise: this.createColumnPromise(),
+            index,
+            column: col,
+          });
+        }
+      }
+
+      if (this.columnPromisesData.length > 0) {
+        const allPromisses = Promise.all(this.columnPromisesData.map((pd) => pd.promise));
+
+        setTimeout(() => {
+          for (const pd of this.columnPromisesData) {
             this.$emit(
               "customEvent",
               this.question.name,
               "dynamicData",
               this.enumProviderCallback,
-              col,
-              index
+              pd.column,
+              pd.index
             );
-            enumValue = [];
           }
-          this.columnDefs.push({
-            headerName: col.header,
-            field: col.field,
-            editable: this.getEditable(col),
-            readonly: col.editable !== undefined && !col.editable,
-            cellRendererFramework: enumValue ? DropdownCellEditor : undefined,
-            enum: enumValue,
-          });
-        }
+        }, 0);
+
+        await allPromisses;
       }
+
+      this.question.guiOptions.columns.forEach((col) => {
+        this.columnDefs.push({
+          headerName: col.header,
+          field: col.field,
+          editable: this.getEditable(col),
+          readonly: col.editable !== undefined && !col.editable,
+          cellRendererFramework: col.enum ? DropdownCellEditor : undefined,
+          enum: col.enum,
+        });
+      });
 
       this.columnDefs.push({
         field: "",
@@ -118,23 +145,37 @@ export default {
       });
     },
 
+    createColumnPromise(index) {
+      let res, rej;
+
+      let promise = new Promise((resolve, reject) => {
+        res = resolve;
+        rej = reject;
+      });
+
+      promise.resolve = res;
+      promise.reject = rej;
+      promise.index = index;
+
+      return promise;
+    },
+
     enumProviderCallback(result) {
-      const { column, index, data } = result;
-      if (this.columnDefs) {
-        this.columnDefs[index] = {
-          headerName: column.header,
-          field: column.field,
-          editable: this.getEditable(column),
-          readonly: column.editable !== undefined && !column.editable,
-          cellRendererFramework: enumValue ? DropdownCellEditor : undefined,
-          enum: data,
-        };
+      const { index, data } = result;
+
+      const promiseToResolve = this.columnPromisesData.find(
+        (pd) => pd.index === index
+      );
+      if (promiseToResolve) {
+        promiseToResolve.promise.resolve();
+        this.question.guiOptions.columns[index].enum = data;
       }
     },
 
     handleCellValueChanged() {
       this.answerChanged();
     },
+
     getEditable(col) {
       if (
         col.enum ||
