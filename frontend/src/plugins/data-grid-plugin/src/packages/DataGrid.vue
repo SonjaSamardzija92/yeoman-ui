@@ -88,19 +88,16 @@ export default {
             col.enumProvider &&
             typeof this.question[col.enumProvider] === "function"
           ) {
-            try {
-              console.log("calling enum provider " + col.enumProvider);
-              const dynData = await this.question[col.enumProvider](
-                col,
-                this.question
-              );
-              // console.log(dynData);
-              enumValue = dynData;
-            } catch (err) {
-              console.log(err);
-            }
+            this.$emit(
+              "customEvent",
+              this.question.name,
+              "dynamicData",
+              this.enumProviderCallback,
+              col,
+              index
+            );
+            enumValue = [];
           }
-
           this.columnDefs.push({
             headerName: col.header,
             field: col.field,
@@ -119,6 +116,20 @@ export default {
         width: 50,
         editable: false,
       });
+    },
+
+    enumProviderCallback(result) {
+      const { column, index, data } = result;
+      if (this.columnDefs) {
+        this.columnDefs[index] = {
+          headerName: column.header,
+          field: column.field,
+          editable: this.getEditable(column),
+          readonly: column.editable !== undefined && !column.editable,
+          cellRendererFramework: enumValue ? DropdownCellEditor : undefined,
+          enum: data,
+        };
+      }
     },
 
     handleCellValueChanged() {
