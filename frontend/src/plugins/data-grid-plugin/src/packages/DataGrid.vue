@@ -88,12 +88,17 @@ export default {
             col.enumProvider &&
             typeof this.question[col.enumProvider] === "function"
           ) {
-            const dynData = await this.question[col.enumProvider](
-              col,
-              this.question
-            );
-            // console.log(dynData);
-            enumValue = dynData;
+            try {
+              console.log("calling enum provider " + col.enumProvider);
+              const dynData = await this.question[col.enumProvider](
+                col,
+                this.question
+              );
+              // console.log(dynData);
+              enumValue = dynData;
+            } catch (err) {
+              console.log(err);
+            }
           }
 
           this.columnDefs.push({
