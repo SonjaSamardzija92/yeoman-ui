@@ -80,7 +80,7 @@ module.exports = class extends Generator {
           }
         ],
         validate: (value, answers) => {
-          return value.length > 0;
+          return value.length > 0 ? true : "Must have at least 1 row entered.";
         },
         dynamicData: async (...params) => {
           return await this.sleep((params) => {
