@@ -20,10 +20,10 @@ module.exports = class extends Generator {
     };
 
     var prompts = [
-      {name: "Basic Information", description: "Provide basic information to receive personalized service."},
-      {name: "Main Dishes", description: "Select a main dish from the list."},
-      {name: "Desserts", description: "How would you like to end your meal?"},
-      {name: "Registration", description: "Thank you for your interest in our resturant.\nPlease enter credentials to register.\n(It should not take you more than 1 minute.)"}
+      { name: "Basic Information", description: "Provide basic information to receive personalized service." },
+      { name: "Main Dishes", description: "Select a main dish from the list." },
+      { name: "Desserts", description: "How would you like to end your meal?" },
+      { name: "Registration", description: "Thank you for your interest in our resturant.\nPlease enter credentials to register.\n(It should not take you more than 1 minute.)" }
     ];
     this.prompts = new types.Prompts(prompts);
 
@@ -42,7 +42,7 @@ module.exports = class extends Generator {
     this.composeWith(require.resolve("../app2"), { prompts: this.prompts });
   }
 
-  async sleep (fn, par) {
+  async sleep(fn, par) {
     return new Promise((resolve) => {
       setTimeout(() => resolve(fn(par)), 0);
     })
@@ -85,9 +85,18 @@ module.exports = class extends Generator {
         dynamicData: async (column, index) => {
           return await this.sleep(() => {
             return {
-              column, 
+              column,
               index,
               data: ['a', 'b', 'c', 'd']
+            };
+          });
+        },
+        dynamicData2: async (column, index) => {
+          return await this.sleep(() => {
+            return {
+              column,
+              index,
+              data: ['x', 'y', 'z']
             };
           });
         },
@@ -110,8 +119,7 @@ module.exports = class extends Generator {
             {
               header: "Test",
               field: "test",
-              editable: false,
-              dataType: "boolean"
+              enumProvider: 'dynamicData2'
             },
             {
               header: "Dropdown",
@@ -121,7 +129,7 @@ module.exports = class extends Generator {
           ]
         },
       },
-    
+
 
       {
         type: 'input',
@@ -131,7 +139,7 @@ module.exports = class extends Generator {
           hint: "Our recommendation is green"
         },
         when: (response) => {
-		      this.log(response.hungry);
+          this.log(response.hungry);
           return response.hungry;
         },
         validate: (value, answers) => {
@@ -158,8 +166,8 @@ module.exports = class extends Generator {
         message: "How many times have you been in this resturant?",
         guiOptions: {
           hint: "We hope you have been in our resturant many times",
-		  applyDefaultWhenDirty: true,
-		  mandatory: true
+          applyDefaultWhenDirty: true,
+          mandatory: true
         },
       },
       {
@@ -201,9 +209,9 @@ module.exports = class extends Generator {
         },
         choices: [
           { value: "junk-food", name: "Junk Food", description: "It is the best food, but long term, junk food can increase the risk of a heart attack.", homepage: "https://www.betterhealthsolutions.org/junk-food-ruining-body/", image: this._getImage(path.join(this.sourceRoot(), "../images/junk-food.jpg")) },
-          { value: "jerk-chicken", name: "Pulled Jerk Chicken", description: "A slow cooked pulled chicken.", image: this._getImage(path.join(this.sourceRoot(), "../images/jerk-chicken.jpeg"))},
-          { value: "lasagna", name: "Lasagna", description: "Layers of creamy ricotta, spinach, and tomato sauce, topped with Parmesan and mozzarella cheese. ", image: this._getImage(path.join(this.sourceRoot(), "../images/lasagna.jpeg"))},
-          { value: "steak", name: "Rib Eye Steak", description: "Super traditional big rib eye with baked potatos.", image: this._getImage(path.join(this.sourceRoot(), "../images/steak.jpg"))},
+          { value: "jerk-chicken", name: "Pulled Jerk Chicken", description: "A slow cooked pulled chicken.", image: this._getImage(path.join(this.sourceRoot(), "../images/jerk-chicken.jpeg")) },
+          { value: "lasagna", name: "Lasagna", description: "Layers of creamy ricotta, spinach, and tomato sauce, topped with Parmesan and mozzarella cheese. ", image: this._getImage(path.join(this.sourceRoot(), "../images/lasagna.jpeg")) },
+          { value: "steak", name: "Rib Eye Steak", description: "Super traditional big rib eye with baked potatos.", image: this._getImage(path.join(this.sourceRoot(), "../images/steak.jpg")) },
           { value: "spaghetti", name: "Spaghetti Carbonara", description: "Classic spaghetti alla carbonara, made with pancetta and Italian-style bacon.", homepage: "https://www.allrecipes.com/recipe/11973/spaghetti-carbonara-ii/", image: DEFAULT_IMAGE },
         ],
         default: "junk-food"
@@ -352,8 +360,8 @@ module.exports = class extends Generator {
       },
       {
         guiOptions: {
-		  hint: "Enter your user name",
-		  mandatory: true
+          hint: "Enter your user name",
+          mandatory: true
         },
         name: "email",
         message: "GitHub user name",
@@ -366,8 +374,8 @@ module.exports = class extends Generator {
         type: "password",
         guiOptions: {
           type: "login",
-		  hint: "Enter your password",
-		  mandatory: true
+          hint: "Enter your password",
+          mandatory: true
         },
         name: "password",
         message: "GitHub password",
@@ -411,7 +419,7 @@ module.exports = class extends Generator {
 
   writing() {
     if (_.get(this.log, "showProgress")) {
-        this.log.showProgress("FoodQ is generating.");
+      this.log.showProgress("FoodQ is generating.");
     }
     this.log('in writing');
     this.fs.copyTpl(this.templatePath('index.html'),

@@ -114,7 +114,7 @@ export default {
             this.$emit(
               "customEvent",
               this.question.name,
-              "dynamicData",
+              pd.column.enumProvider,
               this.enumProviderCallback,
               pd.column,
               pd.index
