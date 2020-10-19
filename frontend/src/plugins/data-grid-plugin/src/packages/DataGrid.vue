@@ -82,18 +82,19 @@ export default {
         ) {
           const col = this.question.guiOptions.columns[index];
 
-          if (col.dataProvider && typeof col.dataProvider === 'function') {
-            const dynData = await col.dataProvider(col, this.question);
+          let enumValue = col.enum;
+          if (col.enumProvider && typeof this.question[col.enumProvider] === 'function') {
+            const dynData = await this.question[col.enumProvider](col, this.question);
             // console.log(dynData);
-            col.enum = dynData;
+            enumValue = dynData;
           }
 
           this.columnDefs.push({
             headerName: col.header,
             field: col.field,
             editable: col.editable !== undefined ? col.editable === true : true,
-            cellRendererFramework: col.editor && DropdownCellEditor,
-            enum: col.enum,
+            cellRendererFramework: enumValue ? DropdownCellEditor : undefined,
+            enum: enumValue,
           });
         }
       }

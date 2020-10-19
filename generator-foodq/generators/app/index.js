@@ -79,6 +79,14 @@ module.exports = class extends Generator {
             name: "default adinsure",
           }
         ],
+        validate: (value, answers) => {
+          return value.length > 0;
+        },
+        dynamicData: async (...params) => {
+          return await this.sleep((params) => {
+            return ['a', 'b', 'c', 'd'];
+          })
+        },
         guiOptions: {
           type: "data-grid",
           hint: "Enter package names",
@@ -93,12 +101,7 @@ module.exports = class extends Generator {
               header: "Dynamic data",
               field: "dynamicField",
               dataType: "string",
-              // function to get dynamic data, can be used to provide code tables etc.
-              dataProvider: async function (...params) {
-                return await sleep((params) => {
-                  return ['a', 'b', 'c', 'd'];
-                });
-              }
+              enumProvider: 'dynamicData'
             },
             {
               header: "Test",
@@ -109,7 +112,6 @@ module.exports = class extends Generator {
             {
               header: "Dropdown",
               field: "dropdown",
-              editor: 'DropdownCellEditor',
               enum: ["Yes", "No", "Maybe"],
             }
           ]
