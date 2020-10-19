@@ -114,7 +114,6 @@ export default {
         width: 50,
         editable: false,
       });
-      
     },
 
     handleCellValueChanged() {
@@ -155,3 +154,53 @@ export default {
   },
 };
 </script>
+<style>
+ag-grid-vue {
+  width: 100% !important;
+}
+ag-grid-vue .ag-cell {
+  font-size: var(--vscode-font-size) !important;
+  font-family: var(--vscode-font-family) !important;
+}
+ag-grid-vue .ag-cell-label-container {
+  font-size: var(--vscode-font-size) !important;
+  font-weight: var(--vscode-editor-font-weight) !important;
+}
+ag-grid-vue .ag-row,
+.ag-header-row,
+.ag-pinned-right-header,
+.ag-header-row,
+.ag-header-row-column,
+.ag-header-cell,
+.ag-header,
+.ag-root-wrapper,
+.ag-cell {
+  border: none !important;
+}
+
+.ag-header {
+  background-color: hsla(0, 0%, 51%, 0.04) !important;
+}
+.ag-root,
+.ag-row {
+  background-color: var(--vscode-editor-background) !important;
+}
+
+.ag-row:hover {
+  background-color: var(--vscode-button-hoverBackground) !important;
+}
+.ag-header-cell-label,
+.ag-cell {
+  color: var(--vscode-foreground) !important;
+}
+.ag-row-hover {
+  background-color: var(--vscode-list-hoverBackground) !important;
+}
+.ag-row-odd {
+  background-color: hsla(0, 0%, 51%, 0.04) !important;
+}
+.ag-input-field-input.ag-text-field-input {
+  background-color: var(--vscode-input-background)  !important;
+  color: var(--vscode-input-foreground)  !important;
+}
+</style> 
