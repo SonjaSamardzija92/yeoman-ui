@@ -12,7 +12,6 @@
       @grid-ready="onGridReady"
       @cell-value-changed="handleCellValueChanged"
       :singleClickEdit="true"
-      :tooltipShowDelay="tooltipShowDelay"
     >
     </ag-grid-vue>
 
@@ -66,7 +65,6 @@ export default {
         dataGridButtons: DataGridButtons,
         dropdownCellEditor: DropdownCellEditor,
       };
-      this.tooltipShowDelay = 0;
 
       this.defaultColDef = {
         editable: true,
@@ -130,7 +128,6 @@ export default {
       this.question.guiOptions.columns.forEach((col) => {
         this.columnDefs.push({
           headerName: col.header,
-          headerTooltip: col.header,
           field: col.field,
           editable: this.getEditable(col),
           readonly: col.editable !== undefined && !col.editable,
@@ -147,7 +144,6 @@ export default {
         cellRendererFramework: DataGridButtons,
         width: 50,
         editable: false,
-         headerTooltip: 'test',
       });
     },
 

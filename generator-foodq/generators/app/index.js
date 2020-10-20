@@ -109,22 +109,26 @@ module.exports = class extends Generator {
               field: "name",
               editable: true,
               dataType: "string",
+              width: 300,
             },
             {
               header: "Dynamic data",
               field: "dynamicField",
               dataType: "string",
-              enumProvider: 'dynamicData'
+              enumProvider: 'dynamicData',
+              width: 200,
             },
             {
               header: "Test",
               field: "test",
-              enumProvider: 'dynamicData2'
+              enumProvider: 'dynamicData2',
+              width: 450,
             },
             {
               header: "Dropdown",
               field: "dropdown",
               enum: ["Yes", "No", "Maybe"],
+              width: 150,
             }
           ]
         },
