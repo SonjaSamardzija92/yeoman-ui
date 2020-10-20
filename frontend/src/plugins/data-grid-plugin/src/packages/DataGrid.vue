@@ -26,6 +26,7 @@ import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { AgGridVue } from "ag-grid-vue";
 import DataGridButtons from "./DataGridButtons";
 import DropdownCellEditor from "./DropdownCellEditor";
+import CheckboxCellEditor from "./CheckboxCellEditor";
 
 export default {
   name: "DataGrid",
@@ -64,6 +65,7 @@ export default {
       this.frameworkComponents = {
         dataGridButtons: DataGridButtons,
         dropdownCellEditor: DropdownCellEditor,
+        checkboxCellEditor: CheckboxCellEditor,
       };
 
       this.defaultColDef = {
@@ -126,16 +128,18 @@ export default {
       }
 
       this.question.guiOptions.columns.forEach((col) => {
-        this.columnDefs.push({
+        let columnsDef = {
           headerName: col.header,
           field: col.field,
           editable: this.getEditable(col),
           readonly: col.editable !== undefined && !col.editable,
-          cellRendererFramework: col.enum ? DropdownCellEditor : undefined,
+          cellRendererFramework: this.getCellRendererFramework(col),
           enum: col.enum,
           flex: col.width === undefined && 1,
           width: col.width,
-        });
+        };
+        columnsDef.editable = this.getEditable(columnsDef);
+        this.columnDefs.push(columnsDef);
       });
 
       this.columnDefs.push({
@@ -179,15 +183,20 @@ export default {
     },
 
     getEditable(col) {
-      if (
-        col.enum ||
-        (col.enumProvider &&
-          typeof this.question[col.enumProvider] === "function")
-      ) {
+      if (col.cellRendererFramework) {
         return false;
       } else {
         return col.editable !== undefined ? col.editable : true;
       }
+    },
+
+    getCellRendererFramework(col) {
+      if (col.enum) {
+        return DropdownCellEditor;
+      } else if (col.dataType === "boolean") {
+        return CheckboxCellEditor;
+      }
+      return undefined;
     },
 
     addNewRow() {
@@ -250,14 +259,11 @@ ag-grid-vue .ag-row,
 }
 
 .ag-row:hover {
-  background-color: var(--vscode-button-hoverBackground) !important;
+  background-color: var(--vscode-list-hoverBackground) !important;
 }
 .ag-header-cell-label,
 .ag-cell {
   color: var(--vscode-foreground) !important;
-}
-.ag-row-hover {
-  background-color: var(--vscode-list-hoverBackground) !important;
 }
 
 .ag-input-field-input.ag-text-field-input {
