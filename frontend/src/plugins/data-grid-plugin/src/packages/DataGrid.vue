@@ -2,7 +2,6 @@
 <template>
   <div>
     <ag-grid-vue
-      style="height: 300px"
       class="ag-theme-alpine"
       :columnDefs="columnDefs"
       :rowData="rowData"
@@ -13,6 +12,7 @@
       @grid-ready="onGridReady"
       @cell-value-changed="handleCellValueChanged"
       :singleClickEdit="true"
+      :tooltipShowDelay="tooltipShowDelay"
     >
     </ag-grid-vue>
 
@@ -66,9 +66,9 @@ export default {
         dataGridButtons: DataGridButtons,
         dropdownCellEditor: DropdownCellEditor,
       };
+      this.tooltipShowDelay = 0;
 
       this.defaultColDef = {
-        flex: 1,
         editable: true,
       };
 
@@ -79,8 +79,8 @@ export default {
         Array.isArray(this.question.guiOptions.columns)
       ) {
         try {
-        await this.createGridColumns();
-        } catch(err) {
+          await this.createGridColumns();
+        } catch (err) {
           console.log(err);
         }
       }
@@ -107,7 +107,9 @@ export default {
       }
 
       if (this.columnPromisesData.length > 0) {
-        const allPromisses = Promise.all(this.columnPromisesData.map((pd) => pd.promise));
+        const allPromisses = Promise.all(
+          this.columnPromisesData.map((pd) => pd.promise)
+        );
 
         setTimeout(() => {
           for (const pd of this.columnPromisesData) {
@@ -128,11 +130,14 @@ export default {
       this.question.guiOptions.columns.forEach((col) => {
         this.columnDefs.push({
           headerName: col.header,
+          headerTooltip: col.header,
           field: col.field,
           editable: this.getEditable(col),
           readonly: col.editable !== undefined && !col.editable,
           cellRendererFramework: col.enum ? DropdownCellEditor : undefined,
           enum: col.enum,
+          flex: col.width === undefined && 1,
+          width: col.width,
         });
       });
 
@@ -142,6 +147,7 @@ export default {
         cellRendererFramework: DataGridButtons,
         width: 50,
         editable: false,
+         headerTooltip: 'test',
       });
     },
 
@@ -215,6 +221,10 @@ export default {
 ag-grid-vue {
   width: 100% !important;
 }
+.ag-theme-alpine {
+  height: 300px;
+  border: 1px solid var(--vscode-list-hoverBackground) !important;
+}
 ag-grid-vue .ag-cell {
   font-size: var(--vscode-font-size) !important;
   font-family: var(--vscode-font-family) !important;
@@ -253,11 +263,9 @@ ag-grid-vue .ag-row,
 .ag-row-hover {
   background-color: var(--vscode-list-hoverBackground) !important;
 }
-.ag-row-odd {
-  background-color: hsla(0, 0%, 51%, 0.04) !important;
-}
+
 .ag-input-field-input.ag-text-field-input {
-  background-color: var(--vscode-input-background)  !important;
-  color: var(--vscode-input-foreground)  !important;
+  background-color: var(--vscode-input-background) !important;
+  color: var(--vscode-input-foreground) !important;
 }
 </style> 
