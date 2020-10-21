@@ -27,6 +27,8 @@ import { AgGridVue } from "ag-grid-vue";
 import DataGridButtons from "./DataGridButtons";
 import DropdownCellEditor from "./DropdownCellEditor";
 import CheckboxCellEditor from "./CheckboxCellEditor";
+import DatePickerCellEditor from "./DatePickerCellEditor.vue";
+
 import { format } from "date-fns";
 import numeral from "numeral";
 
@@ -71,6 +73,7 @@ export default {
         dataGridButtons: DataGridButtons,
         dropdownCellEditor: DropdownCellEditor,
         checkboxCellEditor: CheckboxCellEditor,
+        datePickerCellEditor: DatePickerCellEditor,
       };
 
       this.defaultColDef = {
@@ -199,12 +202,12 @@ export default {
 
     getColumnValueFormatter(params, colDef) {
       if (colDef.dataType === "string") {
-        if (colDef.format) {
-          // return this.dateFormatter(
-          //   params,
-          //   colDef.format.dateFormat ||
-          //     this.defaultValueFormatSettings.dateFormat
-          // );
+        if (colDef.format && colDef.aiFormat) {
+          return this.dateFormatter(
+            params,
+            colDef.format.dateFormat ||
+              this.defaultValueFormatSettings.dateFormat
+          );
         }
       } else if (colDef.dataType === "number") {
         if (params.value) {
@@ -242,7 +245,11 @@ export default {
       if (params.value) {
         try {
           ret =
-            (params.value && format(new Date(params.value), dateFormat)) ||
+            (params.value &&
+              format(
+                new Date(params.value).toISOString().substr(0, 10),
+                dateFormat
+              )) ||
             params.value;
         } catch (err) {
           ret = err.toString();
@@ -262,6 +269,12 @@ export default {
         return DropdownCellEditor;
       } else if (col.dataType === "boolean") {
         return CheckboxCellEditor;
+      } else if (
+        col.dataType === "string" &&
+        col.format &&
+        col.format.aiFormat
+      ) {
+        return DatePickerCellEditor;
       }
       return undefined;
     },
