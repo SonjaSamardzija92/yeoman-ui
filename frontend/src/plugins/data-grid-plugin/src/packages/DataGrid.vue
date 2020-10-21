@@ -200,17 +200,17 @@ export default {
     getColumnValueFormatter(params, colDef) {
       if (colDef.dataType === "string") {
         if (colDef.format) {
-          return this.dateFormatter(
-            params,
-            colDef.format.dateFormat ||
-              this.defaultValueFormatSettings.dateFormat
-          );
+          // return this.dateFormatter(
+          //   params,
+          //   colDef.format.dateFormat ||
+          //     this.defaultValueFormatSettings.dateFormat
+          // );
         }
       } else if (colDef.dataType === "number") {
         if (params.value) {
           if (colDef.format === undefined) {
             return this.numberFormat(params, "0,0.00");
-          } else if (colDef.format.useGroup !== false) {
+          } else if (colDef.format.useGroup) {
             return this.numberFormat(
               params,
               colDef.format.groupFormat || "0,0.00"
@@ -223,9 +223,12 @@ export default {
         }
       } else if (colDef.dataType === "integer") {
         if (params.value) {
-          if (colDef.format === undefined || (colDef.format && colDef.format.useGroup !== false)) {
+          if (
+            colDef.format === undefined ||
+            (colDef.format && colDef.format.useGroup)
+          ) {
             return numeral(params.value).format("0,0");
-          } else{
+          } else {
             let retInt = numeral(params.value);
             params.data[params.colDef.field] = numeral(retInt).value();
             return retInt;
