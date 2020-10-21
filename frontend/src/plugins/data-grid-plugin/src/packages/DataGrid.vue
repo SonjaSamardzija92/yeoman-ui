@@ -27,6 +27,7 @@ import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { AgGridVue } from "ag-grid-vue";
 import DataGridButtons from "./DataGridButtons";
 import DropdownCellEditor from "./DropdownCellEditor";
+import numeral from 'numeral';
 
 export default {
   name: "DataGrid",
@@ -60,6 +61,11 @@ export default {
     },
 
     async initGrid() {
+
+      // test numeral, delete later
+      const formatted = numeral(1000).format('0,0');
+      console.log(formatted);
+
       this.gridOptions = {};
       this.gridContext = { componentParent: this };
       this.frameworkComponents = {
