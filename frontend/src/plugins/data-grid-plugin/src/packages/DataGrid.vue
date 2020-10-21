@@ -26,8 +26,9 @@ import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { AgGridVue } from "ag-grid-vue";
 import DataGridButtons from "./DataGridButtons";
 import DropdownCellEditor from "./DropdownCellEditor";
-import numeral from 'numeral';
 import CheckboxCellEditor from "./CheckboxCellEditor";
+import { format } from "date-fns";
+import numeral from "numeral";
 
 export default {
   name: "DataGrid",
@@ -40,6 +41,9 @@ export default {
       columnDefs: null,
       rowData: null,
       columnPromisesData: [],
+      defaultValueFormatSettings: {
+        dateFormat: "dd.MM.yyyy",
+      },
     };
   },
   components: {
@@ -61,11 +65,6 @@ export default {
     },
 
     async initGrid() {
-
-      // test numeral, delete later
-      const formatted = numeral(1000).format('0,0');
-      console.log(formatted);
-
       this.gridOptions = {};
       this.gridContext = { componentParent: this };
       this.frameworkComponents = {
@@ -143,6 +142,8 @@ export default {
           enum: col.enum,
           flex: col.width === undefined && 1,
           width: col.width,
+          resizable: true,
+          valueFormatter: (params) => this.getColumnValueFormatter(params, col),
         };
         columnsDef.editable = this.getEditable(columnsDef);
         this.columnDefs.push(columnsDef);
@@ -194,6 +195,63 @@ export default {
       } else {
         return col.editable !== undefined ? col.editable : true;
       }
+    },
+
+    getColumnValueFormatter(params, colDef) {
+      if (colDef.dataType === "string") {
+        if (colDef.format) {
+          return this.dateFormatter(
+            params,
+            colDef.format.dateFormat ||
+              this.defaultValueFormatSettings.dateFormat
+          );
+        }
+      } else if (colDef.dataType === "number") {
+        if (params.value) {
+          if (colDef.format === undefined) {
+            return this.numberFormat(params, "0,0.00");
+          } else if (colDef.format.useGroup !== false) {
+            return this.numberFormat(
+              params,
+              colDef.format.groupFormat || "0,0.00"
+            );
+          } else if (colDef.format.decimalFormat) {
+            return this.numberFormat(params, colDef.format.decimalFormat);
+          } else {
+            return this.numberFormat(params, "0.00");
+          }
+        }
+      } else if (colDef.dataType === "integer") {
+        if (params.value) {
+          if (colDef.format === undefined || (colDef.format && colDef.format.useGroup !== false)) {
+            return numeral(params.value).format("0,0");
+          } else{
+            let retInt = numeral(params.value);
+            params.data[params.colDef.field] = numeral(retInt).value();
+            return retInt;
+          }
+        }
+      }
+    },
+
+    dateFormatter(params, dateFormat) {
+      let ret;
+      if (params.value) {
+        try {
+          ret =
+            (params.value && format(new Date(params.value), dateFormat)) ||
+            params.value;
+        } catch (err) {
+          ret = err.toString();
+          params.data[params.colDef.field] = undefined;
+        }
+      }
+      return ret;
+    },
+    numberFormat(params, decimalPlaces) {
+      let ret = numeral(params.value).format(decimalPlaces);
+      params.data[params.colDef.field] = numeral(ret).value();
+      return ret;
     },
 
     getCellRendererFramework(col) {
