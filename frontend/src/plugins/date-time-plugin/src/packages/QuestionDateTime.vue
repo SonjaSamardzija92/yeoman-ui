@@ -75,4 +75,17 @@ export default {
 .date-picker-plugin .v-input__control {
   margin-right: 30px !important;
 }
+.v-application .v-picker__title.primary {
+  background-color: var(--vscode-sideBar-background) !important;
+  color: var(--vscode-foreground) !important;
+}
+.v-application .v-date-picker-table__current.accent {
+  background-color: var(--vscode-sideBar-background) !important;
+  color: var(--vscode-foreground) !important;
+}
+
+.v-application .date-picker-plugin .v-icon.primary--text {
+  color: var(--vscode-foreground) !important;
+  caret-color: var(--vscode-foreground) !important;
+}
 </style> 
