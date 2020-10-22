@@ -146,6 +146,10 @@ export default {
           resizable: true,
           valueFormatter: (params) => this.cellValueFormatter(params, col),
           format: col.format,
+          customOptions: {
+            valueProperty : col.valueProperty,
+            displayProperty: col.displayProperty
+          }
         };
         columnsDef.editable = this.getEditable(columnsDef);
         this.columnDefs.push(columnsDef);

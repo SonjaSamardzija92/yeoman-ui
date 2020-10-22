@@ -103,7 +103,24 @@ module.exports=class extends Generator {
             return {
               column,
               index,
-              data: ['a', 'b', 'c', 'd']
+              data: [
+                {
+                  value: 1,
+                  text: "Text 1"
+                },
+                {
+                  value: 2,
+                  text: "Text 2"
+                },
+                {
+                  value: 3,
+                  text: "Text 3"
+                },
+                {
+                  value: 4,
+                  text: "Text 4"
+                }
+              ]
             };
           });
         },
@@ -150,17 +167,19 @@ module.exports=class extends Generator {
                 formatString: "yyyy.dd.MM"
               }
             },
-            // {
-            //   header: "Dynamic data",
-            //   field: "dynamicField",
-            //   dataType: "string",
-            //   enumProvider: 'dynamicData',
-            // },
             {
               header: "Dynamic data",
               field: "dynamicField",
-              dataType: "boolean",
+              dataType: "string",
+              valueProperty: "value",
+              displayProperty: "text",
+              enumProvider: 'dynamicData',
             },
+            // {
+            //   header: "Dynamic data",
+            //   field: "dynamicField",
+            //   dataType: "boolean",
+            // },
             // {
             //   header: "Test",
             //   field: "test",

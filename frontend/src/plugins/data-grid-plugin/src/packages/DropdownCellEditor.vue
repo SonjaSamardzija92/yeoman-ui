@@ -3,6 +3,8 @@
   <div>
     <v-select
       :items="items"
+      :item-text="itemText"
+      :item-value="itemValue"
       v-model="select"
       v-on:input="onChange(`${select}`)"
       :disabled="readonly"
@@ -18,12 +20,18 @@ export default Vue.extend({
     return {
       select: "",
       items: [],
+      itemText: undefined,
+      itemValue: undefined,
       readonly: false,
     };
   },
 
   beforeMount() {
     this.items = this.params.colDef.enum ? this.params.colDef.enum : [];
+
+    this.itemValue = this.params.colDef.customOptions.valueProperty;
+    this.itemText = this.params.colDef.customOptions.displayProperty;
+
     this.select = this.params.node.data[this.params.colDef.field];
     this.readonly = this.params.colDef.readonly;
   },
