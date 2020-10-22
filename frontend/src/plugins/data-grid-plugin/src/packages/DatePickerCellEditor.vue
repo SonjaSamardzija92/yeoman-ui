@@ -1,26 +1,27 @@
 
-<template>
-  <v-menu
-    :close-on-content-click="true"
-    :nudge-right="40"
-    transition="scale-transition"
-    offset-y
-    min-width="290px"
-  >
-    <template v-slot:activator="{ on }">
-      <v-text-field
-        v-model="dateFormatted"
-        prepend-icon="event"
-        readonly
-        v-on="on"
-        hide-details="auto"
-        outlined
-        dense
-        :disabled="readonly"
-      ></v-text-field>
-    </template>
-    <v-date-picker v-model="date" @input="onInput"></v-date-picker>
-  </v-menu>
+<template >
+  <div class="date-picker-cell-editor">
+    <v-menu
+      :close-on-content-click="true"
+      :nudge-right="40"
+      transition="scale-transition"
+      offset-y
+    >
+      <template v-slot:activator="{ on }">
+        <v-text-field
+          v-model="dateFormatted"
+          prepend-icon="event"
+          readonly
+          v-on="on"
+          hide-details="auto"
+          outlined
+          dense
+          :disabled="readonly"
+        ></v-text-field>
+      </template>
+      <v-date-picker v-model="date" @input="onInput"></v-date-picker>
+    </v-menu>
+  </div>
 </template>
 <script>
 import Vue from "vue";
@@ -67,3 +68,13 @@ export default Vue.extend({
   },
 });
 </script> 
+<style>
+.date-picker-cell-editor .v-input__prepend-outer {
+  position: absolute !important;
+  right: 0 !important;
+  margin-right: 0px !important;
+}
+.date-picker-cell-editor .v-input__control {
+  margin-right: 30px !important;
+}
+</style> 
