@@ -6,7 +6,7 @@
       :item-text="itemText"
       :item-value="itemValue"
       v-model="select"
-      v-on:input="onChange(`${select}`)"
+      v-on:input="onChange()"
       :disabled="readonly"
     ></v-select>
   </div>
@@ -18,7 +18,7 @@ import Vue from "vue";
 export default Vue.extend({
   data() {
     return {
-      select: "",
+      select: undefined,
       items: [],
       itemText: undefined,
       itemValue: undefined,
@@ -37,8 +37,8 @@ export default Vue.extend({
   },
 
   methods: {
-    onChange(select) {
-      this.params.setValue(select);
+    onChange() {
+      this.params.setValue(this.select);
       this.params.context.componentParent.answerChanged();
       this.params.api.stopEditing();
     },

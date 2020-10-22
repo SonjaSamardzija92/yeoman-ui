@@ -180,11 +180,11 @@ module.exports=class extends Generator {
             //   field: "dynamicField",
             //   dataType: "boolean",
             // },
-            // {
-            //   header: "Test",
-            //   field: "test",
-            //   enumProvider: 'dynamicData2',
-            // },
+            {
+              header: "Test",
+              field: "test",
+              enumProvider: 'dynamicData2',
+            },
             // {
             //   header: "Dropdown",
             //   field: "dropdown",
