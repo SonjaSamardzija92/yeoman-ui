@@ -22,7 +22,6 @@
 <script>
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
-// import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { AgGridVue } from "ag-grid-vue";
 import DataGridButtons from "./DataGridButtons";
 import DropdownCellEditor from "./DropdownCellEditor";
@@ -146,7 +145,7 @@ export default {
           width: col.width,
           resizable: true,
           valueFormatter: (params) => this.getColumnValueFormatter(params, col),
-          format: col.format
+          format: col.format,
         };
         columnsDef.editable = this.getEditable(columnsDef);
         this.columnDefs.push(columnsDef);
@@ -222,7 +221,7 @@ export default {
             colDef.format === undefined ||
             (colDef.format && colDef.format.useGroup)
           ) {
-            return numeral(params.value).format("0,0");
+            return this.numberFormat(params, "0,0");
           } else {
             let retInt = numeral(params.value);
             params.data[params.colDef.field] = numeral(retInt).value();
