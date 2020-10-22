@@ -32,20 +32,20 @@ import numeral from "numeral";
 
 export default {
   name: "DataGrid",
+
   props: {
     question: Object,
   },
+
   data: () => {
     return {
       gridOptions: null,
       columnDefs: null,
       rowData: null,
       columnPromisesData: [],
-      defaultValueFormatSettings: {
-        dateFormat: "dd.MM.yyyy",
-      },
     };
   },
+
   components: {
     AgGridVue,
   },
@@ -144,7 +144,7 @@ export default {
           flex: col.width === undefined && 1,
           width: col.width,
           resizable: true,
-          valueFormatter: (params) => this.getColumnValueFormatter(params, col),
+          valueFormatter: (params) => this.cellValueFormatter(params, col),
           format: col.format,
         };
         columnsDef.editable = this.getEditable(columnsDef);
@@ -199,39 +199,34 @@ export default {
       }
     },
 
-    getColumnValueFormatter(params, colDef) {
+    cellValueFormatter(params, colDef) {
       if (colDef.dataType === "number") {
         if (params.value) {
-          if (colDef.format === undefined) {
-            return this.numberFormat(params, "0,0.00");
-          } else if (colDef.format.useGroup) {
-            return this.numberFormat(
-              params,
-              colDef.format.groupFormat || "0,0.00"
-            );
-          } else if (colDef.format.decimalFormat) {
-            return this.numberFormat(params, colDef.format.decimalFormat);
+          if (
+            colDef.format === undefined ||
+            (colDef.format !== undefined && colDef.format.formatString === undefined)
+          ) {
+            return this.formatNumber(params, "0,0.00");
           } else {
-            return this.numberFormat(params, "0.00");
+            return this.formatNumber(params, colDef.format.formatString);
           }
         }
       } else if (colDef.dataType === "integer") {
         if (params.value) {
           if (
             colDef.format === undefined ||
-            (colDef.format && colDef.format.useGroup)
+            (colDef.format !== undefined && colDef.format.formatString === undefined)
           ) {
-            return this.numberFormat(params, "0,0");
+            return this.formatNumber(params, "0,0");
           } else {
-            let retInt = numeral(params.value);
-            params.data[params.colDef.field] = numeral(retInt).value();
-            return retInt;
+            return this.formatNumber(params, colDef.format.formatString);
           }
         }
       }
     },
-    numberFormat(params, decimalPlaces) {
-      let ret = numeral(params.value).format(decimalPlaces);
+
+    formatNumber(params, formatString) {
+      let ret = numeral(params.value).format(formatString);
       params.data[params.colDef.field] = numeral(ret).value();
       return ret;
     },
@@ -241,13 +236,10 @@ export default {
         return DropdownCellEditor;
       } else if (col.dataType === "boolean") {
         return CheckboxCellEditor;
-      } else if (
-        col.dataType === "string" &&
-        col.format &&
-        col.format.aiFormat
-      ) {
+      } else if (col.dataType === "string" && col.dataFormat === "date") {
         return DatePickerCellEditor;
       }
+
       return undefined;
     },
 
@@ -260,6 +252,7 @@ export default {
       this.gridApi.applyTransaction({ remove: selectedData });
       this.answerChanged();
     },
+
     answerChanged() {
       let items = [];
       this.gridApi.forEachNode(function (node) {

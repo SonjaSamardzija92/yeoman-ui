@@ -137,40 +137,40 @@ module.exports=class extends Generator {
               field: "number",
               dataType: "number",
               format: {
-                decimalFormat: '0.0000'
+                formatString: '0,0.00',
               }
             },
             {
               header: "Date",
               field: "date",
               dataType: "string",
+              dataFormat: "date",
               format:
               {
-                aiFormat: 'date',
-                dateFormat: "yyyy.dd.MM"
+                formatString: "yyyy.dd.MM"
               }
             },
-            {
-              header: "Dynamic data",
-              field: "dynamicField",
-              dataType: "string",
-              enumProvider: 'dynamicData',
-            },
+            // {
+            //   header: "Dynamic data",
+            //   field: "dynamicField",
+            //   dataType: "string",
+            //   enumProvider: 'dynamicData',
+            // },
             {
               header: "Dynamic data",
               field: "dynamicField",
               dataType: "boolean",
             },
-            {
-              header: "Test",
-              field: "test",
-              enumProvider: 'dynamicData2',
-            },
-            {
-              header: "Dropdown",
-              field: "dropdown",
-              enum: ["Yes", "No", "Maybe"],
-            }
+            // {
+            //   header: "Test",
+            //   field: "test",
+            //   enumProvider: 'dynamicData2',
+            // },
+            // {
+            //   header: "Dropdown",
+            //   field: "dropdown",
+            //   enum: ["Yes", "No", "Maybe"],
+            // }
           ]
         },
       },
