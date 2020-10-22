@@ -202,7 +202,7 @@ export default {
 
     getColumnValueFormatter(params, colDef) {
       if (colDef.dataType === "string") {
-        if (colDef.format && colDef.aiFormat) {
+        if (colDef.format && colDef.format.aiFormat) {
           return this.dateFormatter(
             params,
             colDef.format.dateFormat ||
@@ -245,11 +245,7 @@ export default {
       if (params.value) {
         try {
           ret =
-            (params.value &&
-              format(
-                new Date(params.value).toISOString().substr(0, 10),
-                dateFormat
-              )) ||
+            (params.value && format(new Date(params.value), dateFormat)) ||
             params.value;
         } catch (err) {
           ret = err.toString();

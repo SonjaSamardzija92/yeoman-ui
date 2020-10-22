@@ -16,10 +16,10 @@
         hide-details="auto"
         outlined
         dense
+        :disabled="readonly"
       ></v-text-field>
     </template>
     <v-date-picker
-      :disabled="readonly"
       v-model="date"
       @input="onInput"
     ></v-date-picker>
