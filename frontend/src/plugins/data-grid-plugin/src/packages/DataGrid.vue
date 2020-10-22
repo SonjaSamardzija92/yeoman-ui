@@ -29,7 +29,6 @@ import DropdownCellEditor from "./DropdownCellEditor";
 import CheckboxCellEditor from "./CheckboxCellEditor";
 import DatePickerCellEditor from "./DatePickerCellEditor.vue";
 
-import { format } from "date-fns";
 import numeral from "numeral";
 
 export default {
@@ -147,6 +146,7 @@ export default {
           width: col.width,
           resizable: true,
           valueFormatter: (params) => this.getColumnValueFormatter(params, col),
+          format: col.format
         };
         columnsDef.editable = this.getEditable(columnsDef);
         this.columnDefs.push(columnsDef);
@@ -201,15 +201,7 @@ export default {
     },
 
     getColumnValueFormatter(params, colDef) {
-      if (colDef.dataType === "string") {
-        if (colDef.format && colDef.format.aiFormat) {
-          return this.dateFormatter(
-            params,
-            colDef.format.dateFormat ||
-              this.defaultValueFormatSettings.dateFormat
-          );
-        }
-      } else if (colDef.dataType === "number") {
+      if (colDef.dataType === "number") {
         if (params.value) {
           if (colDef.format === undefined) {
             return this.numberFormat(params, "0,0.00");
@@ -238,21 +230,6 @@ export default {
           }
         }
       }
-    },
-
-    dateFormatter(params, dateFormat) {
-      let ret;
-      if (params.value) {
-        try {
-          ret =
-            (params.value && format(new Date(params.value), dateFormat)) ||
-            params.value;
-        } catch (err) {
-          ret = err.toString();
-          params.data[params.colDef.field] = undefined;
-        }
-      }
-      return ret;
     },
     numberFormat(params, decimalPlaces) {
       let ret = numeral(params.value).format(decimalPlaces);
