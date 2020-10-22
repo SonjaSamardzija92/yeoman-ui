@@ -58,7 +58,7 @@ export default Vue.extend({
 
       return format(
         new Date(date),
-        (this.params.colDef.format && this.params.colDef.format.dateFormat) ||
+        (this.params.colDef.format && this.params.colDef.format.formatString) ||
           this.defaultDateFormat
       );
     },
