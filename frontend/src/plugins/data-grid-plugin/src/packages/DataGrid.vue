@@ -12,6 +12,7 @@
       @grid-ready="onGridReady"
       @cell-value-changed="handleCellValueChanged"
       :singleClickEdit="true"
+      :stopEditingWhenGridLosesFocus="true"
     >
     </ag-grid-vue>
 
