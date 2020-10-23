@@ -70,12 +70,13 @@ module.exports=class extends Generator {
         type: "input",
         name: "birthday",
         message: "Birthday",
+        default: '2020-10-01',
         guiOptions: {
           type: "date",
           hint: "Enter Birthday",
           format:
           {
-            dateFormat: "yyyy.dd.MM"
+            dateFormat: "YYYY.DD.MM"
           }
         },
         validate: (value, answers) => {
@@ -96,6 +97,7 @@ module.exports=class extends Generator {
           }
         ],
         validate: (value, answers) => {
+          console.log(value);
           return value.length>0? true:"Must have at least 1 row entered.";
         },
         dynamicData: async (column, index) => {
@@ -164,7 +166,7 @@ module.exports=class extends Generator {
               dataFormat: "date",
               format:
               {
-                formatString: "yyyy.dd.MM"
+                formatString: "YYYY.DD.MM"
               }
             },
             {
