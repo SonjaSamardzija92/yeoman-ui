@@ -144,6 +144,7 @@ export default {
           enum: col.enum,
           flex: col.width === undefined && 1,
           width: col.width,
+          minWidth: 70,
           resizable: true,
           valueFormatter: (params) => this.cellValueFormatter(params, col),
           format: col.format,

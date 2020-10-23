@@ -1,12 +1,12 @@
 <template>
-<div class="date-picker-editor">
-  <date-picker
-    v-model="dateFormatted"
-    value-type="YYYY-MM-DD"
-    :format="defaultDateFormat"
-    @change="handleChange"
-  ></date-picker>
-    </div>
+  <div class="date-picker-editor date-picker-plugin">
+    <date-picker
+      v-model="dateFormatted"
+      value-type="YYYY-MM-DD"
+      :format="defaultDateFormat"
+      @change="handleChange"
+    ></date-picker>
+  </div>
 </template>
 
 <script>
@@ -44,3 +44,8 @@ export default {
   },
 };
 </script>
+<style>
+.date-picker-plugin .mx-input {
+  height: 40px;
+}
+</style>

@@ -63,4 +63,7 @@ export default Vue.extend({
 .mx-table-date .today {
   color: var(--vscode-input-background);
 }
+.date-picker-editor .mx-datepicker {
+  width: 100%;
+}
 </style>
