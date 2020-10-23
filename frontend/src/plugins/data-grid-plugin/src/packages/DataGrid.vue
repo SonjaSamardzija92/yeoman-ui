@@ -13,6 +13,8 @@
       @cell-value-changed="handleCellValueChanged"
       :singleClickEdit="true"
       :stopEditingWhenGridLosesFocus="true"
+      :tooltipShowDelay="tooltipShowDelay"
+      :enableBrowserTooltips="true"
     >
     </ag-grid-vue>
 
@@ -28,6 +30,7 @@ import DataGridButtons from "./DataGridButtons";
 import DropdownCellEditor from "./DropdownCellEditor";
 import CheckboxCellEditor from "./CheckboxCellEditor";
 import DatePickerCellEditor from "./DatePickerCellEditor.vue";
+import CustomTooltip from "./CustomTooltip";
 
 import numeral from "numeral";
 
@@ -44,6 +47,8 @@ export default {
       columnDefs: null,
       rowData: null,
       columnPromisesData: [],
+      defaultColDef: null,
+      tooltipShowDelay: null,
     };
   },
 
@@ -68,11 +73,13 @@ export default {
     async initGrid() {
       this.gridOptions = {};
       this.gridContext = { componentParent: this };
+      this.tooltipShowDelay = 1000;
       this.frameworkComponents = {
         dataGridButtons: DataGridButtons,
         dropdownCellEditor: DropdownCellEditor,
         checkboxCellEditor: CheckboxCellEditor,
         datePickerCellEditor: DatePickerCellEditor,
+        customTooltip: CustomTooltip,
       };
 
       this.defaultColDef = {
@@ -147,10 +154,13 @@ export default {
           resizable: true,
           valueFormatter: (params) => this.cellValueFormatter(params, col),
           format: col.format,
+          headerTooltip: col.header,
+          // tooltipComponent: "customTooltip",
+          tooltipField: col.field,
           customOptions: {
-            valueProperty : col.valueProperty,
-            displayProperty: col.displayProperty
-          }
+            valueProperty: col.valueProperty,
+            displayProperty: col.displayProperty,
+          },
         };
         columnsDef.editable = this.getEditable(columnsDef);
         this.columnDefs.push(columnsDef);
@@ -209,7 +219,8 @@ export default {
         if (params.value) {
           if (
             colDef.format === undefined ||
-            (colDef.format !== undefined && colDef.format.formatString === undefined)
+            (colDef.format !== undefined &&
+              colDef.format.formatString === undefined)
           ) {
             return this.formatNumber(params, "0,0.00");
           } else {
@@ -220,7 +231,8 @@ export default {
         if (params.value) {
           if (
             colDef.format === undefined ||
-            (colDef.format !== undefined && colDef.format.formatString === undefined)
+            (colDef.format !== undefined &&
+              colDef.format.formatString === undefined)
           ) {
             return this.formatNumber(params, "0,0");
           } else {
