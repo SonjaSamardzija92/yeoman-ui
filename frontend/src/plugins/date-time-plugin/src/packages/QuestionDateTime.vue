@@ -1,10 +1,12 @@
 <template>
+<div class="date-picker-editor">
   <date-picker
     v-model="dateFormatted"
     value-type="YYYY-MM-DD"
     :format="defaultDateFormat"
     @change="handleChange"
   ></date-picker>
+    </div>
 </template>
 
 <script>
