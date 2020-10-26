@@ -2,7 +2,7 @@
 <template>
   <div>
     <ag-grid-vue
-      class="ag-theme-alpine"
+      class="ag-theme-alpine ag-grid-plugin"
       :columnDefs="columnDefs"
       :rowData="rowData"
       :defaultColDef="defaultColDef"
@@ -14,7 +14,6 @@
       :singleClickEdit="true"
       :stopEditingWhenGridLosesFocus="true"
       :tooltipShowDelay="tooltipShowDelay"
-      :enableBrowserTooltips="true"
     >
     </ag-grid-vue>
 
@@ -30,7 +29,6 @@ import DataGridButtons from "./DataGridButtons";
 import DropdownCellEditor from "./DropdownCellEditor";
 import CheckboxCellEditor from "./CheckboxCellEditor";
 import DatePickerCellEditor from "./DatePickerCellEditor.vue";
-import CustomTooltip from "./CustomTooltip";
 
 import numeral from "numeral";
 
@@ -79,7 +77,6 @@ export default {
         dropdownCellEditor: DropdownCellEditor,
         checkboxCellEditor: CheckboxCellEditor,
         datePickerCellEditor: DatePickerCellEditor,
-        customTooltip: CustomTooltip,
       };
 
       this.defaultColDef = {
@@ -156,7 +153,6 @@ export default {
           valueFormatter: (params) => this.cellValueFormatter(params, col),
           format: col.format,
           headerTooltip: col.header,
-          // tooltipComponent: "customTooltip",
           tooltipField: col.field,
           customOptions: {
             valueProperty: col.valueProperty,
@@ -289,9 +285,9 @@ export default {
 ag-grid-vue {
   width: 100% !important;
 }
-.ag-theme-alpine {
-  height: 300px;
+.ag-grid-plugin {
   border: 1px solid var(--vscode-list-hoverBackground) !important;
+  height: 300px
 }
 ag-grid-vue .ag-cell {
   font-size: var(--vscode-font-size) !important;
