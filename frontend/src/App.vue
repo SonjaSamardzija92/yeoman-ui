@@ -249,7 +249,7 @@ export default {
         this.isReplaying = true;
         this.numOfSteps = numOfSteps;
         const answers = this.currentPrompt.answers;
-        if (this.promptIndex - numOfSteps > 0) {
+        if (this.promptIndex - numOfSteps >= 0) {
           this.rpc.invoke("back", [answers, numOfSteps]);
         } else {
           this.reload();
