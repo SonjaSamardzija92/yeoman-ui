@@ -57,4 +57,8 @@ export default Vue.extend({
 .v-select__selection {
   padding-left: 5px;
 }
+.v-list-item__title {
+  line-height: 24px;
+  height: 24px;
+}
 </style> 
