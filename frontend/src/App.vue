@@ -246,6 +246,9 @@ export default {
     gotoStep(numOfSteps) {
       // go numOfSteps step back
       try {
+        if(this.isReplaying){
+          return;
+        }
         this.isReplaying = true;
         this.numOfSteps = numOfSteps;
         const answers = this.currentPrompt.answers;
