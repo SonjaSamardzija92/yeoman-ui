@@ -1,7 +1,6 @@
 <template>
   <v-app id="app" class="vld-parent">
     <loading
-      :active.sync="showBusyIndicator"
       :is-full-page="true"
       :height="64"
       :width="64"
